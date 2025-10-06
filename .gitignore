@@ -1,0 +1,66 @@
+# --- Python Artifacts ---
+# Ignore bytecode and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore build and distribution folders
+build/
+dist/
+*.egg-info/
+*.egg
+
+# --- Virtual Environments ---
+# Ignore common virtual environment directories
+.env
+.venv
+env/
+venv/
+ENV/
+VENV/
+
+# --- Airflow Specific ---
+# Ignore local Airflow database, logs, and configurations
+airflow.db
+airflow.db-journal
+unittests.cfg
+logs/
+*.pid
+webserver_config.py
+dag_processor_manager/
+
+# --- Secrets & Credentials ---
+# Never commit secrets, API keys, or credentials files!
+*.env
+secrets.yaml
+credentials.json
+.credentials/
+
+# --- IDE & Editor Configs ---
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PyCharm
+.idea/
+
+# --- Operating System Files ---
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# --- Data & Notebooks ---
+# Ignore large data files that aren't part of the repo
+*.csv
+*.json
+*.parquet
+# To track a specific data file, add it with ! e.g., !data/my_sample_data.csv
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints
