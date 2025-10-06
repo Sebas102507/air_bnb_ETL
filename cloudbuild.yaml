@@ -6,8 +6,6 @@ steps:
   - '-d'
   - '-r'
   - 'dags/'
-  - 'gs://australia-southeast1-dba-te-7c53d3bc-bucket/dags'
-
+  - 'gs://${GCS_BUCKET_NAME}/dags'
 options:
   logging: CLOUD_LOGGING_ONLY
-  
