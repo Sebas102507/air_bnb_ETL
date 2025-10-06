@@ -6,6 +6,6 @@ steps:
   - '-d'
   - '-r'
   - 'dags/'
-  - 'gs://${GCS_BUCKET_NAME}/dags'
+  - 'gs://${_GCS_BUCKET_NAME}/dags'
 options:
   logging: CLOUD_LOGGING_ONLY
