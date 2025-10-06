@@ -11,7 +11,7 @@ DAGS_FOLDER = os.path.dirname(__file__)
 DATA_FOLDER = os.path.join(DAGS_FOLDER, 'data')
 
 @dag(
-    dag_id='process_data_from_folders_logging',
+    dag_id='process_data_from_source_folders_to_db_bronze',
     start_date=datetime(2025, 10, 6),
     schedule=None,
     catchup=False,
