@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS bronze.nsw_lga_suburbs_bronze (
+    LGA_CODE TEXT,
+    LGA_NAME TEXT,
+    SUBURB_NAME TEXT,
+    load_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
