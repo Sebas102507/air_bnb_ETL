@@ -1,0 +1,9 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - 'gsutil'
+  - 'rsync'
+  - '-d'
+  - '-r'
+  - 'dags/'
+  - 'gs://australia-southeast1-dba-te-7c53d3bc-bucket/dags'
