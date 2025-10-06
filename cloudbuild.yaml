@@ -1,5 +1,6 @@
 steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'sync-dags'
   args:
   - 'gsutil'
   - 'rsync'
@@ -7,5 +8,14 @@ steps:
   - '-r'
   - 'dags/'
   - 'gs://${_GCS_BUCKET_NAME}/dags'
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: 'copy-requirements'
+  args:
+  - 'gsutil'
+  - 'cp'
+  - 'requirements.txt'
+  - 'gs://${_GCS_BUCKET_NAME}/'
+
 options:
   logging: CLOUD_LOGGING_ONLY
