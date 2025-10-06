@@ -4,7 +4,9 @@ import logging
 from datetime import datetime
 import pandas as pd
 from airflow.decorators import dag, task
-logging.getLogger().setLevel(logging.INFO)
+
+# Note: This line is not needed in modern Airflow versions as logging is auto-configured.
+# logging.getLogger().setLevel(logging.INFO)
 
 # Define the base path relative to the DAG file
 DAGS_FOLDER = os.path.dirname(__file__)
@@ -66,10 +68,10 @@ def process_data_from_folders_dag():
         
         return f"Processed {combined_df.shape[0]} rows from {len(csv_files)} files in {folder_name}."
 
-    # Create a task for each folder from your screenshot
-    process_census_task = process_folder(folder_name='Census LGA')
-    process_listings_task = process_folder(folder_name='listings')
-    process_nsw_lga_task = process_folder(folder_name='NSW_LGA')
+    # Create a task for each folder, giving each a unique task_id
+    process_census_task = process_folder.override(task_id='process_census_lga_data')(folder_name='Census LGA')
+    process_listings_task = process_folder.override(task_id='process_listings_data')(folder_name='listings')
+    process_nsw_lga_task = process_folder.override(task_id='process_nsw_lga_data')(folder_name='NSW_LGA')
 
 
 # Instantiate the DAG
