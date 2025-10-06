@@ -60,7 +60,7 @@ def extract_and_load_gcs_data(folder_name: str, table_name: str):
     )
 
 @dag(
-    dag_id='gcs_to_postgres_bronze_etl',
+    dag_id='process_data_from_gcs_folders_to_db_bronze',
     start_date=datetime(2025, 10, 6),
     schedule=None,
     catchup=False,
