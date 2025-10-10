@@ -7,7 +7,7 @@ steps:
   - '-d'
   - '-r'
   - 'dags/'
-  - 'gs://${_GCS_BUCKET_NAME}/dags'
+  - 'gs://${_GCS_BUCKET_NAME_2}/dags'
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   id: 'copy-requirements'
@@ -15,7 +15,7 @@ steps:
   - 'gsutil'
   - 'cp'
   - 'requirements.txt'
-  - 'gs://${_GCS_BUCKET_NAME}/'
+  - 'gs://${_GCS_BUCKET_NAME_2}/'
 
 options:
   logging: CLOUD_LOGGING_ONLY
