@@ -1,7 +1,7 @@
 import logging
 import os
 import glob
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 from airflow.decorators import dag
 from airflow.operators.python import PythonOperator
@@ -85,12 +85,20 @@ def extract_and_load_data_func(table_name: str, **kwargs):
 #   DAG Definition
 #
 #########################################################
+
+# Define default arguments for the DAG
+default_args = {
+    'owner': 'airflow',
+    'retries': 0,
+}
+
 @dag(
     dag_id='process_data_from_gcs_folders_to_db_bronze',
     start_date=datetime(2025, 10, 6),
     schedule=None,
     catchup=False,
     tags=['gcs', 'postgres', 'etl'],
+    default_args=default_args  # Apply the default arguments to the DAG
 )
 def gcs_to_postgres_bronze_dag():
     """
@@ -146,3 +154,4 @@ def gcs_to_postgres_bronze_dag():
 
 # Instantiate the DAG
 gcs_to_postgres_bronze_dag()
+
