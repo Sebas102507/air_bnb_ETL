@@ -3,9 +3,7 @@ import os
 import glob
 from datetime import datetime
 import pandas as pd
-import gcsfs
 from airflow.decorators import dag
-from airflow.models.variable import Variable
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
@@ -23,42 +21,21 @@ AIRFLOW_DATA = "/home/airflow/gcs/data"
 #########################################################
 def extract_and_load_data_func(folder_name: str, table_name: str, **kwargs):
     """
-    Reads CSV files from a folder, combines them, and loads the result
-    into a specified PostgreSQL table. It prioritizes the local GCS mount
-    and falls back to a direct GCS bucket read if necessary.
+    Reads all CSV files from a local folder, combines them, and loads
+    the result into a specified PostgreSQL table.
     """
-    file_paths = []
     local_folder_path = os.path.join(AIRFLOW_DATA, folder_name)
 
-    # Try reading from the local mounted directory first
-    if os.path.isdir(local_folder_path):
-        logging.info("--- Reading from local GCS mount: %s ---", local_folder_path)
-        file_paths = glob.glob(os.path.join(local_folder_path, "*.csv"))
-        # Added log for files found locally
-        if file_paths:
-            logging.info("Found local files to process: %s", file_paths)
+    # Read from the local mounted directory
+    logging.info("--- Reading from local GCS mount: %s ---", local_folder_path)
+    file_paths = glob.glob(os.path.join(local_folder_path, "*.csv"))
 
-    # If local path fails or is empty, fall back to the GCS bucket
+    # Abort if no files were found
     if not file_paths:
-        logging.warning(
-            "Local path '%s' not found or empty. Falling back to GCS bucket.",
-            local_folder_path
-        )
-        try:
-            BUCKET_NAME = Variable.get("gcs_bucket")
-            gcs_folder_path = f"gs://{BUCKET_NAME}/data/{folder_name}"
-            logging.info("--- Reading from GCS bucket: %s ---", gcs_folder_path)
-            fs = gcsfs.GCSFileSystem()
-            gcs_files = fs.glob(f"{gcs_folder_path}/*.csv")
-            file_paths = [f"gs://{file}" for file in gcs_files]
-        except KeyError:
-            logging.error("Fallback failed: Airflow Variable 'gcs_bucket' not found.")
-            return
-
-    # Abort if no files were found by either method
-    if not file_paths:
-        logging.warning("No CSV files found in local path or GCS. Skipping task.")
+        logging.warning("No CSV files found in %s. Skipping task.", local_folder_path)
         return
+
+    logging.info("Found local files to process: %s", file_paths)
 
     # Generate dataframe by reading the CSV files
     logging.info("Reading %d CSV files...", len(file_paths))
@@ -105,7 +82,7 @@ def gcs_to_postgres_bronze_dag():
         python_callable=extract_and_load_data_func,
         op_kwargs={
             'folder_name': 'Census LGA',
-            'table_name': 'bronze.census_lga'
+            'table_name': 'bronze.census_lga_bronze'
         }
     )
 
@@ -114,7 +91,7 @@ def gcs_to_postgres_bronze_dag():
         python_callable=extract_and_load_data_func,
         op_kwargs={
             'folder_name': 'listings',
-            'table_name': 'bronze.listings'
+            'table_name': 'bronze.listings_bronze'
         }
     )
 
@@ -123,7 +100,7 @@ def gcs_to_postgres_bronze_dag():
         python_callable=extract_and_load_data_func,
         op_kwargs={
             'folder_name': 'NSW_LGA',
-            'table_name': 'bronze.nsw_lga_suburbs'
+            'table_name': 'bronze.nsw_lga_suburbs_bronze'
         }
     )
 
